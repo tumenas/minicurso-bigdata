@@ -1,0 +1,50 @@
+
+
+# Vídeo Youtube: [Hadoop] - Exemplo MapReduce
+# https://www.youtube.com/watch?v=YObLRoLS5vs
+
+
+###########################
+# Iniciar Hadoop
+###########################
+
+/usr/home/hadoop-3.3.0/sbin/
+start-all.sh
+jps
+
+http://localhost:9870 (NameNode)
+http://localhost:9864 (DataNode)
+http://localhost:8088 (YARN)
+
+###########################
+# Inserir dados no HDFS (https://www.tutorialspoint.com/hadoop/hadoop_command_reference.htm)
+###########################
+
+(Criar diretório)
+$HADOOP_HOME/bin/hadoop fs -mkdir /user/input
+
+(Transferir arquivo do diretório /home para o diretório /user/input criado no Hadoop)
+($HADOOP_HOME/bin/hadoop fs -put /home/file.txt /user/input )
+
+$HADOOP_HOME/bin/hadoop fs -put /home/tumenas/Aulas/BigData/dados/machado_assis/*.txt /user/input
+
+(Verificar arquivos no diretório)
+$HADOOP_HOME/bin/hadoop fs -ls /user/input
+
+################################
+# Rodar MapReduce
+################################
+(Sair do Safe Mode)
+$HADOOP_HOME/bin/hadoop dfsadmin -safemode leave
+
+(Tornar mapper.py e reducer.py executáveis)
+chmod a+x *.py
+
+(Rodar MapReduce)
+hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-3.3.0.jar -input /user/input/*.txt -output /user/output/results -mapper $HADOOP_HOME/mapper.py -reducer $HADOOP_HOME/reducer.py
+
+(Exportar dados do HDFS para o local (get))
+$HADOOP_HOME/bin/hadoop fs -get /user/output/results $HADOOP_HOME
+
+
+
